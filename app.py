@@ -5,9 +5,9 @@ import bs4
 #TODO flask limiter
 app = Flask(__name__)
 
-IP = "127.0.0.1"
-PORT = 8080
-DEBUG = False
+# IP = "127.0.0.1"
+# PORT = 8080
+# DEBUG = False
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -53,4 +53,4 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    app.run(host=IP, port=PORT, debug=DEBUG)
+    app.run()
