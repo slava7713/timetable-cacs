@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Testing</title>
+</head>
+<body>
+
+
+<div id="form" class="container-fluid" {{ "hidden=true" if search_results or add_id }} >
+
+<form class="form" method="POST">
+
+    <div class="form-group">
+
+        <label for="search">Фамилия</label>
+        <input name="search" type="text" maxlength="50" class="form-control" id="search" placeholder="Иванов" >
+
+    </div>
+
+    <button name="search_button" type="submit" class="btn btn-default">ОК</button>
+
+</form>
+
+</div>
+
+{{ search_results|safe }}
+
+
+<!--{% if file %}
+
+<div id="loader" class="loader" >Загрузка...</div>
+
+<div id="timetable_button" class="container-fluid" style="display: none">
+
+    <a href="{{'webcal' if request.user_agent.platform == 'iphone' or request.user_agent.platform == 'ipad' else 'http' }}://{{ request.url_root.split('//')[1] }}{{ file }}"
+       class="{{'btn btn-primary' if request.user_agent.platform == 'iphone' or request.user_agent.platform == 'ipad' else ''}}">Подписаться</a>
+
+    {% if not request.user_agent.platform == 'iphone' or request.user_agent.platform == 'ipad' %}
+
+    <div class="container-fluid">
+
+        На Android: Копируйте ссылку "Подписаться" и добавьте расписание в календарь Google. <a target="_blank" href="https://support.google.com/calendar/answer/37100?hl=ru">Инструкция</a>
+        <br>
+        Или воспользуйтесь <a target="_blank" href="https://play.google.com/store/apps/details?id=at.bitfire.icsdroid">этим приложением</a>, чтобы синхронизировать календарь
+
+
+    </div>
+
+    {% endif %}
+{% endif %}
+</div>-->
+
+
+</body>
+</html>
