@@ -70,11 +70,11 @@ def index():
 def send_file(selst):
     # Serve the file from db
 
-    response = serve_file(selst)
-    if response:
-        return response, 200, {'Content-Type': 'text/calendar; charset=utf-8'}
-    else:
-        return 'Error', 404
+    if selst.isdecimal():
+        response = serve_file(selst)
+        if response:
+            return response, 200, {'Content-Type': 'text/calendar; charset=utf-8'}
+    return 'Error', 404
 
 
 @app.route('/stats')
