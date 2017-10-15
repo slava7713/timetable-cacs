@@ -77,14 +77,6 @@ def show_stats():
     return render_template('stats.html', totals=totals, items=items)
 
 
-# # TODO: remove
-# @app.route('/test')
-# def test():
-#     b = open("D:\\Users\\slava_000\\Desktop\\test.ics", 'rb')
-#     return send_file(b, attachment_filename='123.ics',
-#                      mimetype='text/calendar'), 200, {'Content-Type': 'text/calendar; charset=utf-8'}
-
-
 @app.errorhandler(404)
 def page_not_found(e):
     return e, 404
@@ -92,5 +84,7 @@ def page_not_found(e):
 
 if __name__ == '__main__':
 
-    debug = os.environ['FLASK_DEBUG']
-    app.run(debug=debug)
+    if os.environ['FLASK_DEBUG']:
+        app.run(host='192.168.10.101', debug=True)
+    else:
+        app.run()

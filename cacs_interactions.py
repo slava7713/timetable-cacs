@@ -10,6 +10,10 @@ def search(search_term):
     search_page_soup = bs4.BeautifulSoup(search_page_text, 'html5lib')
     table = search_page_soup.find('form', {'name': 'FrmStdSrch'}).next_sibling.next_sibling.next_sibling
 
+    table['class'].append(' table-striped')
+    del table['bgcolor']
+    table.tbody.contents[2].append(search_page_soup.new_tag('td'))
+
     for row in table.tbody.contents[3:]:
         selst = int(row['onclick'].split('=')[2].strip()[:-1])
         del row['onclick']

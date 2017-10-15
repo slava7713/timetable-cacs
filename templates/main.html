@@ -94,10 +94,12 @@
 <h1 class="h1 navbar">Расписание</h1>
 
 <div id="instructions" class="container-fluid">
-    <p>Введите фамилию и нажмите ОК. Через ~20 секунд появится кнопка "Подписаться". Расписание обновляется само каждый день.</p>
+    <p>Введите фамилию так же, как искали бы себя на каксе и нажмите ОК. Имена отображаются в том же порядке, что и в поиске на каксе.
+        Выберите себя и подождите, через ~20 секунд появится кнопка "Подписаться".
+        Расписание обновляется само каждый день.</p>
 </div>
 
-{% if not file or search_results %}
+{% if not (file or search_results) %}
 
 <div id="form" class="container-fluid">
 
@@ -149,7 +151,7 @@
 
 {% endif %}
 
-<footer class="container-fluid" style="position:fixed; bottom:0; left:0}">
+<footer class="container-fluid">
 
     <h2><a href="mailto:timetable.cacs@gmail.com">обратная связь</a></h2>
 
