@@ -1,14 +1,28 @@
-from flask import Flask, request, render_template, send_file
+from flask import Flask, request, render_template, Response
 from cacs_interactions import search
+from functools import wraps
 from calendar_creation import create_calendar
 from database_interaction import add_student, check_existence, serve_file, list_data
 import os
 
 # TODO: flask limiter
-# TODO: figure out a way to find old selst and remove
 # TODO: add errors, logging
 
 app = Flask(__name__)
+username = os.environ['FLASK_LOGIN']
+password = os.environ['FLASK_PASSWORD']
+
+
+def requires_auth(f):
+    # To require login for stats page
+
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not (auth.username == username and auth.password == password):
+            return Response('Wrong password', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
+        return f(*args, **kwargs)
+    return decorated
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -55,6 +69,7 @@ def send_file(selst):
 
 
 @app.route('/stats')
+@requires_auth
 def show_stats():
     # Show overall stats
 
@@ -76,8 +91,6 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    try:
-        debug = os.environ['FLASK_DEBUG']
-    except KeyError:
-        debug = False
+
+    debug = os.environ['FLASK_DEBUG']
     app.run(debug=debug)

@@ -7,10 +7,7 @@ import os
 
 parse.uses_netloc.append('postgres')
 
-try:
-    url = parse.urlparse(os.environ['DATABASE_URL'])
-except KeyError:
-    url = parse.urlparse('postgres://user:123@localhost:5432/timetable')
+url = parse.urlparse(os.environ['DATABASE_URL'])
 
 # Setup the connection to the database
 conn = psycopg2.connect(
