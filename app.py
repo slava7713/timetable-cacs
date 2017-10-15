@@ -3,14 +3,23 @@ from cacs_interactions import search
 from functools import wraps
 from calendar_creation import create_calendar
 from database_interaction import add_student, check_existence, serve_file, list_data
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import os
 
-# TODO: flask limiter
 # TODO: add errors, logging
 
 app = Flask(__name__)
+
 username = os.environ['FLASK_LOGIN']
 password = os.environ['FLASK_PASSWORD']
+
+# Set up the limiter to prevent too many requests
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["50 per day", "20 per hour"]
+)
 
 
 def requires_auth(f):

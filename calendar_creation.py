@@ -6,76 +6,69 @@ from cacs_interactions import request_page
 
 
 def month_parse(text):
-    # TODO: description and rework this mess
+    # Parse the html to separate it into days and classes
 
-    soup_find_all_result = bs4.BeautifulSoup(text, 'html5lib').find_all("table", attrs={'class': "TEXT1",
-                                                                                        'width': "100%",
-                                                                                        'height': "100%",
-                                                                                        'cellspacing': "0",
-                                                                                        'cellpadding': "0",
-                                                                                        'border': "0",
-                                                                                        'align': "center"})
-    month_unparsed = []
+    html = bs4.BeautifulSoup(text, 'html5lib')
+    month = html.find('table',
+                      attrs={'style': "margin-top: 4", 'class': "TEXT1", 'cellspacing': "1", 'cellpadding': "0",
+                             'bgcolor': "#8F928F", 'align': "center", 'border': "0", 'width': "100%"}).tbody
     month_parsed = []
-    day_length = []
+    for days_of_the_week in month.find_all('tr', recursive=False):
+        days = days_of_the_week.find_all('td', recursive=False)
+        # Workaround to not break anything yet yield correct # of classes
 
-    for r in soup_find_all_result:
-        r = str(r).replace('<br/>', '\n')
-        g = bs4.BeautifulSoup(r, 'html5lib')
-        text_with_fixed_errors = g.text
-        t = [x.replace('\xa0', '') for x in text_with_fixed_errors.split('  ')]
-        day_element_placeholder = []
-        for elem in t:
-            day_element_placeholder.append(elem)
-        month_unparsed.append(day_element_placeholder)
+        class_order = [int(x.text) for x in days[1].table.tbody.find_all('td')[1::2]]
+        if class_order:
+            # If month is not empty, proceed
 
-    if month_unparsed[0] == [''] or month_unparsed[0][0].replace('.', '').isnumeric():
-        return []
+            day_start = class_order[0]
+            day_length = len(class_order)
 
-    for j, k in enumerate(month_unparsed):
-        if k[1][0].isnumeric():
-            for m in range(1, len(k)):
-                day_length.append(int(k[m][0]))
-        break
-    for day in month_unparsed:
-        day_parsed = []
-
-        if not day[0]:
-            continue
-
-        elif day[0].replace('.', '').isnumeric():
-            day_parsed.append(day[0])
-
-            for n in range(day_length[0] - 1):
-                day.insert(1, '\n\n')
-
-            for m in range(1, day_length[-1] + 1):
-                if not day[m]:
-                    day_parsed.append(['', ''])
+            for day in days[1:]:
+                items = day.table.tbody.find_all('tr', recursive=False)
+                date = items[0].text
+                temp = [''] * (day_length + 1)
+                temp[0] = date
+                if not date.strip():
                     continue
-                if day[m][0].isnumeric():
-                    day[m] = day[m][1:]
-                if day[m]:
-                    day[m] = [x for x in day[m].split('\n')[0:2]]
-                day_parsed.append(day[m])
-            month_parsed.append(day_parsed)
+                for index, item in enumerate(items):
+                    try:
+                        data = item.find_all('div')[1]
+                        if data.text.strip() == '':
+                            continue
+                    except IndexError:
+                        continue
+                    short_name_tag = data.b
+                    room_tag = short_name_tag.find_next().find_next()
+                    type_tag_text, prof_tag_text = data.text.split('[')[1].split(']')
+                    location = '%s[%s]' % (room_tag.text, type_tag_text)
+                    temp[index] = [short_name_tag.text, location, prof_tag_text]
+                if day_start != 0:
+                    for i in range(day_start - 1):
+                        temp.insert(1, '')
+                month_parsed.append(temp)
+
     return month_parsed
 
 
-def create_calendar(selst):
-    # TODO: add comments
-    # TODO: get the new version from laptop!!
+def get_days(selst):
+    # Get the two months (or one if next is summer) for the selst
+    days = []
+    days += month_parse(request_page(selst))
+
+    if not arrow.now().month == 6:
+        days += month_parse(request_page(selst, next_month=True))
+
+    return days
+
+
+def create_file(days):
+    # Create the .ics file from the parsed month
 
     calendar = ics.Calendar(imports='BEGIN:VCALENDAR\nPRODID:ics.py - http://git.io/lLljaA'
                                     '\nVERSION:1\nX-WR-CALDESC:Расписание\nEND:VCALENDAR')
-    full = []
-    full += month_parse(request_page(selst))
 
-    if not arrow.now().month == 6:
-
-        full += month_parse(request_page(selst, next_month=True))
-
-    for day in full:
+    for day in days:
         for index, item in enumerate(day[1:]):
             if item != ['', ''] and item != '':
                 event = ics.Event()
@@ -83,6 +76,12 @@ def create_calendar(selst):
                 event.duration = timedelta(hours=1, minutes=30)
                 event.location = item[1]
                 event.name = item[0]
+                event.description = item[2]
                 calendar.events.append(event)
 
     return bytes(str(calendar), 'utf-8')
+
+
+def create_calendar(selst):
+    # Go through the whole process: get the two months, parse them, create and return the file
+    return create_file(get_days(selst))
