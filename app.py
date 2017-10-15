@@ -1,50 +1,64 @@
-from flask import Flask, request, render_template
-import requests
-import bs4
+from flask import Flask, request, render_template, send_file
+from cacs_interactions import search
+from calendar_creation import create_calendar
+from database_interaction import add_student, check_existence, serve_file
+import os
 
-#TODO flask limiter
+# TODO: flask limiter
+# TODO: figure out a way to find old selst and remove
+# TODO: add errors, logging
+
 app = Flask(__name__)
-
-# IP = "127.0.0.1"
-# PORT = 8080
-# DEBUG = False
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    # Main page that provides search, selection and subscription
+
     search_results = ''
-    add_id = ''
-    if request.method == 'POST' and request.form['search']:
-        search_term = {'VZESH': request.form['search'].encode('windows-1251')}
-        search_page_text = requests.post('http://cacs.econ.msu.ru/index.php', params={'mnu': '75'}, data=search_term).text
-        search_page_soup = bs4.BeautifulSoup(search_page_text, 'html5lib')
-        table = search_page_soup.find('form', {'name': 'FrmStdSrch'}).next_sibling.next_sibling.next_sibling
+    file = ''
 
-        for row in table.tbody.contents[3:]:
+    try:
+        request_search = request.form['search']
+    except KeyError:
+        request_search = ''
 
-            selst = int(row['onclick'].split('=')[2].strip()[:-1])
-            del row['onclick']
+    try:
+        request_add = request.form['add']
+    except KeyError:
+        request_add = ''
 
-            new_column = search_page_soup.new_tag('td')
+    if request.method == 'POST' and request_search:
+        # If the search form was posted get the results and display them
+        search_term = {'VZESH': request_search.encode('windows-1251')}
+        search_results = search(search_term)
 
-            new_form = search_page_soup.new_tag("form")
-            new_form.attrs = {'class': 'form', 'method': 'POST'}
+    if request.method == 'POST' and request_add:
+        # If the name was selected, check if it exists, if not add it to the db, create the calendar and serve the link
+        selst = request_add
+        if not check_existence(selst):
+            add_student(selst, create_calendar(selst))
+        file = '%s.ics' % selst
 
-            new_form_button = search_page_soup.new_tag('button')
-            new_form_button.attrs = {'type': 'submit', 'class': 'btn btn-default', 'name': 'add',
-                                    'value': selst}
-            new_form_button.string = 'Выбрать'
+    return render_template('main.html', search_results=search_results, file=file)
 
-            new_form.append(new_form_button)
-            new_column.append(new_form)
-            row.contents.append(new_column)
 
-        search_results = table
+@app.route('/<selst>.ics')
+def send_file(selst):
 
-    elif request.method == 'POST' and request.form['add']:
-        pass
+    response = serve_file(selst)
+    if response:
+        return response, 200, {'Content-Type': 'text/calendar; charset=utf-8'}
+    else:
+        return 'Error', 404
 
-    return render_template('main.html', search_results=search_results, add_id=add_id)
+
+# # TODO: remove
+# @app.route('/test')
+# def test():
+#     b = open("D:\\Users\\slava_000\\Desktop\\test.ics", 'rb')
+#     return send_file(b, attachment_filename='123.ics',
+#                      mimetype='text/calendar'), 200, {'Content-Type': 'text/calendar; charset=utf-8'}
 
 
 @app.errorhandler(404)
@@ -53,4 +67,8 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    app.run()
+    try:
+        debug = os.environ['FLASK_DEBUG']
+    except KeyError:
+        debug = False
+    app.run(debug=debug)

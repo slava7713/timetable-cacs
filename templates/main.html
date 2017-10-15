@@ -1,13 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Testing</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Расписания</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <style>
+          .loader {
+          color: #000000;
+          font-size: 90px;
+          text-indent: -9999em;
+          overflow: hidden;
+          width: 1em;
+          height: 1em;
+          border-radius: 50%;
+          margin: 72px auto;
+          position: relative;
+          -webkit-transform: translateZ(0);
+          -ms-transform: translateZ(0);
+          transform: translateZ(0);
+          -webkit-animation: load6 1.7s infinite ease;
+          animation: load6 1.7s infinite ease;
+        }
+        @-webkit-keyframes load6 {
+          0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+            box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+          }
+          5%,
+          95% {
+            box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+          }
+          10%,
+          59% {
+            box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+          }
+          20% {
+            box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+          }
+          38% {
+            box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+          }
+          100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+            box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+          }
+        }
+        @keyframes load6 {
+          0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+            box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+          }
+          5%,
+          95% {
+            box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+          }
+          10%,
+          59% {
+            box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+          }
+          20% {
+            box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+          }
+          38% {
+            box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+          }
+          100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+            box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+          }
+        }
+    </style>
+    <script>
+        function showCalendar() {
+        document.getElementById("timetable_button").style.display = "block";
+        document.getElementById("instructions").style.display = "none";
+        document.getElementById("loader").style.display = "none";
+        }
+        //this calls the function above, 10000 milliseconds is 10 seconds, adjust here to make it a longer interval
+        setTimeout("showCalendar()", 20000);
+    </script>
+
 </head>
 <body>
 
 
-<div id="form" class="container-fluid" {{ "hidden=true" if search_results or add_id }} >
+<div id="form" class="container-fluid" {{ "hidden=true" if search_results or file }} >
 
 <form class="form" method="POST">
 
@@ -27,8 +111,9 @@
 {{ search_results|safe }}
 
 
-<!--{% if file %}
+{% if file %}
 
+<a href= {{ file }} >CALENDAR</a>
 <div id="loader" class="loader" >Загрузка...</div>
 
 <div id="timetable_button" class="container-fluid" style="display: none">
@@ -49,7 +134,7 @@
 
     {% endif %}
 {% endif %}
-</div>-->
+</div>
 
 
 </body>
