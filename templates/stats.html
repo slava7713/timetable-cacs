@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Stats</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+
+<h1 class="h1 navbar"><a href="">Список:</a> {{ items|length }} человек</h1>
+
+<table class="table table-condensed table-striped">
+
+    <tr>
+        <th>ID</th>
+        <th>Последний доступ</th>
+        <th>Дата обновления</th>
+    </tr>
+
+    <tr>
+        <th>Ошибки</th>
+        <th>{{ totals[0] }}</th>
+        <th>{{ totals[1] }}</th>
+    </tr>
+
+    {%- for item in items recursive %}
+
+    <tr>
+        <td>
+            <a href="webcal://{{ request.url_root.split('//')[1] }}{{ item[0][0] }}.ics">{{ item[0][0] }}</a>
+        </td>
+
+        <td {{ 'class=bg-danger' if item[1][0] else '' }} >
+            {{ item[0][1] }}
+        </td>
+
+        <td {{ 'class=bg-danger' if item[1][1] else '' }} >
+            {{ item[0][2] }}
+        </td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+</body>
+</html>

@@ -64,6 +64,8 @@ def month_parse(text):
 
 def create_calendar(selst):
     # TODO: add comments
+    # TODO: get the new version from laptop!!
+
     calendar = ics.Calendar(imports='BEGIN:VCALENDAR\nPRODID:ics.py - http://git.io/lLljaA'
                                     '\nVERSION:1\nX-WR-CALDESC:Расписание\nEND:VCALENDAR')
     full = []

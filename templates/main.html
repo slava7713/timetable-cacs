@@ -91,29 +91,40 @@
 <body>
 
 
-<div id="form" class="container-fluid" {{ "hidden=true" if search_results or file }} >
+<h1 class="h1 navbar">Расписание</h1>
 
-<form class="form" method="POST">
+<div id="instructions" class="container-fluid">
+    <p>Введите фамилию и нажмите ОК. Через ~20 секунд появится кнопка "Подписаться". Расписание обновляется само каждый день.</p>
+</div>
 
-    <div class="form-group">
+{% if not file or search_results %}
 
-        <label for="search">Фамилия</label>
-        <input name="search" type="text" maxlength="50" class="form-control" id="search" placeholder="Иванов" >
+<div id="form" class="container-fluid">
 
-    </div>
+    <form class="form" method="POST">
 
-    <button name="search_button" type="submit" class="btn btn-default">ОК</button>
+        <div class="form-group">
 
-</form>
+            <label for="search">Фамилия</label>
+            <input name="search" type="text" maxlength="20" class="form-control" id="search" placeholder="Иванов" >
+
+        </div>
+
+        <button name="search_button" type="submit" class="btn btn-default">ОК</button>
+
+    </form>
 
 </div>
+
+
+{% endif %}
+
 
 {{ search_results|safe }}
 
 
 {% if file %}
 
-<a href= {{ file }} >CALENDAR</a>
 <div id="loader" class="loader" >Загрузка...</div>
 
 <div id="timetable_button" class="container-fluid" style="display: none">
@@ -133,9 +144,16 @@
     </div>
 
     {% endif %}
-{% endif %}
+
 </div>
 
+{% endif %}
+
+<footer class="container-fluid" style="position:fixed; bottom:0; left:0}">
+
+    <h2><a href="mailto:timetable.cacs@gmail.com">обратная связь</a></h2>
+
+</footer>
 
 </body>
 </html>

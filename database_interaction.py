@@ -1,6 +1,6 @@
 from urllib import parse
 import psycopg2
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 # Database schema: (selst integer, last_access date, last_update date, file bytea)
@@ -64,7 +64,8 @@ def serve_file(selst):
 
 def remove_student(selst):
     # Remove student
-    pass
+
+    cur.execute('DELETE FROM econ WHERE selst = %s', (selst,))
 
 
 def get_all_selst():
@@ -75,8 +76,41 @@ def get_all_selst():
     return [item[0] for item in result]
 
 
+def list_data():
+    # List all data for statistics page ((selst, last_access, last_update), (error_no_access, error_no_update))
+    # Errors = (no access for 90 days, no update for 3 days)
+
+    cur.execute('SELECT selst, last_access, last_update FROM econ')
+    result = cur.fetchall()
+
+    new_result = []
+    no_access_total = 0
+    no_update_total = 0
+
+    for item in result:
+        error_no_access = False
+        error_no_update = False
+
+        if today() - item[1] > timedelta(days=90):
+            error_no_access = True
+            no_access_total += 1
+
+        if today() - item[2] > timedelta(days=3):
+            error_no_update = True
+            no_update_total += 1
+
+        new_result.append((item, (error_no_access, error_no_update)))
+
+    totals = (no_access_total, no_update_total)
+
+    return totals, new_result
+
+
 def purge_old():
-    # Find all old calendars and remove them
-    pass
+    # Remove all selst with last_access of more than 180 days ago
 
-
+    cur.execute('SELECT selst, last_access FROM econ')
+    result = cur.fetchall()
+    for item in result:
+        if today() - item[1] > timedelta(days=180):
+            remove_student(item[0])

@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, send_file
 from cacs_interactions import search
 from calendar_creation import create_calendar
-from database_interaction import add_student, check_existence, serve_file
+from database_interaction import add_student, check_existence, serve_file, list_data
 import os
 
 # TODO: flask limiter
@@ -45,12 +45,21 @@ def index():
 
 @app.route('/<selst>.ics')
 def send_file(selst):
+    # Serve the file from db
 
     response = serve_file(selst)
     if response:
         return response, 200, {'Content-Type': 'text/calendar; charset=utf-8'}
     else:
         return 'Error', 404
+
+
+@app.route('/stats')
+def show_stats():
+    # Show overall stats
+
+    totals, items = list_data()
+    return render_template('stats.html', totals=totals, items=items)
 
 
 # # TODO: remove
