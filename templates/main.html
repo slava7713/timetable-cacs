@@ -21,8 +21,8 @@
           -webkit-transform: translateZ(0);
           -ms-transform: translateZ(0);
           transform: translateZ(0);
-          -webkit-animation: load6 1.7s infinite ease;
-          animation: load6 1.7s infinite ease;
+          -webkit-animation: load6 3s 5 ease;
+          animation: load6 3s 5 ease;
         }
         @-webkit-keyframes load6 {
           0% {
@@ -85,7 +85,7 @@
         document.getElementById("loader").style.display = "none";
         }
         //this calls the function above, 10000 milliseconds is 10 seconds, adjust here to make it a longer interval
-        setTimeout("showCalendar()", 20000);
+        setTimeout("showCalendar()", 15000);
     </script>
 
 </head>
@@ -131,7 +131,7 @@
 
 {% if file %}
 
-<div id="loader" class="loader" >Загрузка...</div>
+<div id="loader" class="loader" style="display: block" >Загрузка...</div>
 
 <div id="timetable_button" class="container-fluid" style="display: none">
 
@@ -150,6 +150,8 @@
     </div>
 
     {% endif %}
+    <br>
+    <br>
 
 </div>
 

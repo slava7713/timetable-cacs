@@ -18,7 +18,7 @@ password = os.environ['FLASK_PASSWORD']
 limiter = Limiter(
     app,
     key_func=get_remote_address,
-    default_limits=["50 per day", "20 per hour"]
+    default_limits=["1000 per day", "100 per hour"]
 )
 
 
