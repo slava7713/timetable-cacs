@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Расписания</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <style>
           .loader {
           color: #000000;
@@ -80,7 +80,8 @@
     <script>
         function showCalendar() {
         document.getElementById("timetable_button").style.display = "block";
-        document.getElementById("instructions").style.display = "none";
+        document.getElementById("instructions1").style.display = "none";
+        document.getElementById("instructions2").style.display = "none";
         document.getElementById("loader").style.display = "none";
         }
         //this calls the function above, 10000 milliseconds is 10 seconds, adjust here to make it a longer interval
@@ -93,11 +94,14 @@
 
 <h1 class="h1 navbar">Расписание</h1>
 
-<div id="instructions" class="container-fluid">
-    <p>Введите фамилию так же, как искали бы себя на каксе и нажмите ОК. Имена отображаются в том же порядке, что и в поиске на каксе.
-        Выберите себя и подождите, через ~20 секунд появится кнопка "Подписаться".
+<div id="instructions1" class="container-fluid">
+    <p>Введите фамилию так же, как искали бы себя на каксе и нажмите ОК.<br>
+        Имена отображаются в том же порядке, что и в поиске на каксе.<br>
+        Выберите себя и подождите, через ~20 секунд появится кнопка "Подписаться".<br>
         Расписание обновляется само каждый день.</p>
 </div>
+
+<br>
 
 {% if not search_results %}
 
@@ -105,16 +109,30 @@
 
     <form class="form" method="POST">
 
-        <div class="form-group">
+        <div class="input-group-btn">
 
             <label for="search">Фамилия</label>
             <input name="search" type="text" maxlength="20" class="form-control" id="search" placeholder="Иванов" >
+            <button name="search_button" type="submit" class="btn btn-primary">ОК</button>
 
         </div>
 
-        <button name="search_button" type="submit" class="btn btn-default">ОК</button>
-
     </form>
+
+</div>
+
+<br>
+
+<div id="instructions2" class="container-fluid">
+
+    <h2>Для того, чтобы отписаться:</h2>
+
+    <ul class="list-group">
+          <li class="list-group-item">Нажмите «Настройки» > «Календарь» > «Учетные записи».</li>
+          <li class="list-group-item">Нажмите «Подписные календари» и коснитесь календаря, который необходимо удалить.</li>
+          <li class="list-group-item">Нажмите «Удалить учетную запись» и снова нажмите «Удалить учетную запись» для подтверждения.</li>
+          <li class="list-group-item"><a href="https://support.apple.com/ru-ru/HT202361">Больше инструкций тут.</a></li>
+    </ul>
 
 </div>
 
@@ -150,6 +168,8 @@
 </div>
 
 {% endif %}
+<br>
+<br>
 
 <footer class="container-fluid">
 

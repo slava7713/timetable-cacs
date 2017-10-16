@@ -17,6 +17,7 @@ def search(search_term):
     for row in table.tbody.contents[3:]:
         selst = int(row['onclick'].split('=')[2].strip()[:-1])
         del row['onclick']
+        del row['bgcolor']
 
         new_column = search_page_soup.new_tag('td')
 
@@ -24,7 +25,7 @@ def search(search_term):
         new_form.attrs = {'class': 'form', 'method': 'POST'}
 
         new_form_button = search_page_soup.new_tag('button')
-        new_form_button.attrs = {'type': 'submit', 'class': 'btn btn-default', 'name': 'add',
+        new_form_button.attrs = {'type': 'submit', 'class': 'btn btn-primary', 'name': 'add',
                                  'value': selst}
         new_form_button.string = 'Выбрать'
 

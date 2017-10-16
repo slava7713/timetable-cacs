@@ -3,6 +3,7 @@ import arrow
 import bs4
 from datetime import timedelta
 from cacs_interactions import request_page
+import logging
 
 
 def month_parse(text):
@@ -54,10 +55,21 @@ def month_parse(text):
 def get_days(selst):
     # Get the two months (or one if next is summer) for the selst
     days = []
-    days += month_parse(request_page(selst))
+
+    try:
+        days += month_parse(request_page(selst))
+
+    except Exception as exc:
+        logging.error('Error with parsing month for %s' % str(selst))
+        raise exc
 
     if not arrow.now().month == 6:
-        days += month_parse(request_page(selst, next_month=True))
+        try:
+            days += month_parse(request_page(selst, next_month=True))
+
+        except Exception as exc:
+            logging.error('Error with parsing next month for %s' % str(selst))
+            raise exc
 
     return days
 
