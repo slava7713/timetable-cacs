@@ -37,12 +37,17 @@ def search(search_term):
 
 def request_page(selst, next_month=False):
     # Request the page of student with id selst for this or next month
+    address = 'http://cacs.econ.msu.ru/index.php'
 
+    # Have to do this since won't get next month otherwise
+    session = requests.session()
     params = {'mnu': '75', 'selst': selst}
 
     if next_month:
 
+        # Extra step since you always have to get current month first
+        session.get(address, params=params)
         date = arrow.now().replace(months=+1).format('M.YYYY')
         params.update({'pMns': date})
 
-    return requests.get('http://cacs.econ.msu.ru/index.php', params=params, timeout=15).text
+    return session.get(address, params=params, timeout=15).text
