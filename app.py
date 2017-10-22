@@ -93,7 +93,7 @@ def prof():
         prr = request_add
         if not check_existence(prr, prof=True):
             add_to_db(prr, create_calendar(prr, prof=True), prof=True)
-        file = '/prof/%s.ics' % prr
+        file = 'prof/%s.ics' % prr
 
     return render_template('prof.html', search_results=search_results, file=file)
 
