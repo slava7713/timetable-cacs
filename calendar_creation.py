@@ -52,23 +52,23 @@ def month_parse(text):
     return month_parsed
 
 
-def get_days(selst):
+def get_days(n, prof):
     # Get the two months (or one if next is summer) for the selst
     days = []
 
     try:
-        days += month_parse(request_page(selst))
+        days += month_parse(request_page(n, prof))
 
     except Exception as exc:
-        logging.error('Error with parsing month for %s' % str(selst))
+        logging.error('Error with parsing month for %s' % str(n))
         raise exc
 
     if not arrow.now().month == 6:
         try:
-            days += month_parse(request_page(selst, next_month=True))
+            days += month_parse(request_page(n, prof, next_month=True))
 
         except Exception as exc:
-            logging.error('Error with parsing next month for %s' % str(selst))
+            logging.error('Error with parsing next month for %s' % str(n))
             raise exc
 
     return days
@@ -94,6 +94,6 @@ def create_file(days):
     return bytes(str(calendar), 'utf-8')
 
 
-def create_calendar(selst):
+def create_calendar(n, prof):
     # Go through the whole process: get the two months, parse them, create and return the file
-    return create_file(get_days(selst))
+    return create_file(get_days(n, prof))

@@ -24,60 +24,84 @@ cur = conn.cursor()
 today = datetime.now().date
 
 
-def check_existence(selst):
+def check_existence(n, prof):
     # Checks whether selst is in db so as not to create the file a second time
-
-    cur.execute('SELECT * FROM econ WHERE selst = %s', (selst,))
+    if prof:
+        cur.execute('SELECT * FROM econ_prof WHERE prr = %s', (n,))
+    else:
+        cur.execute('SELECT * FROM econ WHERE selst = %s', (n,))
     if cur.fetchone():
         return True
 
 
-def add_student(selst, file):
+def add_to_db(n, file, prof):
     # Add a new selst and file
-
+    import time
+    time.sleep(10)
     last_access = today()
     last_update = last_access
+    if prof:
+        cur.execute('INSERT INTO econ_prof (prr, last_access, last_update, file) VALUES (%s, %s, %s, %s)',
+                    (n, last_access, last_update, file))
+    else:
+        cur.execute('INSERT INTO econ (selst, last_access, last_update, file) VALUES (%s, %s, %s, %s)',
+                    (n, last_access, last_update, file))
 
-    cur.execute('INSERT INTO econ (selst, last_access, last_update, file) VALUES (%s, %s, %s, %s)',
-                (selst, last_access, last_update, file))
 
-
-def update_file(selst, file):
+def update_file(n, file, prof):
     # Update the file of specified selst
+    if prof:
+        cur.execute('UPDATE econ_prof SET last_update = %s, file = %s WHERE prr = %s', (today(), file, n))
+    else:
+        cur.execute('UPDATE econ SET last_update = %s, file = %s WHERE selst = %s', (today(), file, n))
 
-    cur.execute('UPDATE econ SET last_update = %s, file = %s WHERE selst = %s', (today(), file, selst))
 
-
-def serve_file(selst):
+def serve_file(n, prof):
     # Fetch selst's file and update last_access
 
-    cur.execute('SELECT file FROM econ WHERE selst = %s', (selst,))
-    result = cur.fetchone()
+    if prof:
+        cur.execute('SELECT file FROM econ_prof WHERE prr = %s', (n,))
+        result = cur.fetchone()
 
-    if result:
-        cur.execute('UPDATE econ SET last_access = %s WHERE selst = %s', (today(), selst))
-        return bytes(result[0])
+        if result:
+            cur.execute('UPDATE econ_prof SET last_access = %s WHERE prr = %s', (today(), n))
+            return bytes(result[0])
+    else:
+        cur.execute('SELECT file FROM econ WHERE selst = %s', (n,))
+        result = cur.fetchone()
+
+        if result:
+            cur.execute('UPDATE econ SET last_access = %s WHERE selst = %s', (today(), n))
+            return bytes(result[0])
 
 
-def remove_student(selst):
+def remove_from_db(n, prof):
     # Remove student
+    if prof:
+        cur.execute('DELETE FROM econ_prof WHERE prr = %s', (n,))
+    else:
+        cur.execute('DELETE FROM econ WHERE selst = %s', (n,))
 
-    cur.execute('DELETE FROM econ WHERE selst = %s', (selst,))
 
-
-def get_all_selst():
+def get_all_db():
     # Get a list of all selst
 
     cur.execute('SELECT selst FROM econ')
     result = cur.fetchall()
-    return [item[0] for item in result]
+    students = [item[0] for item in result]
+    cur.execute('SELECT prr FROM econ_prof')
+    result = cur.fetchall()
+    profs = [item[0] for item in result]
+    return [students, profs]
 
 
-def list_data():
-    # List all data for statistics page ((selst, last_access, last_update), (error_no_access, error_no_update))
+def list_data(prof):
+    # List all data for statistics page ((selst/prr, last_access, last_update), (error_no_access, error_no_update))
     # Errors = (no access for 90 days, no update for 3 days)
-
-    cur.execute('SELECT selst, last_access, last_update FROM econ')
+    if prof:
+        cur.execute('SELECT prr, last_access, last_update FROM econ_prof')
+    else:
+        cur.execute('SELECT selst, last_access, last_update FROM econ')
     result = cur.fetchall()
 
     new_result = []
@@ -104,10 +128,15 @@ def list_data():
 
 
 def purge_old():
-    # Remove all selst with last_access of more than 180 days ago
+    # Remove all items with last_access of more than 180 days ago
 
     cur.execute('SELECT selst, last_access FROM econ')
-    result = cur.fetchall()
-    for item in result:
+    students = cur.fetchall()
+    cur.execute('SELECT prr, last_access FROM econ_prof')
+    profs = cur.fetchall()
+    for item in students:
         if today() - item[1] > timedelta(days=180):
-            remove_student(item[0])
+            remove_from_db(item[0], prof=False)
+    for item in profs:
+        if today() - item[1] > timedelta(days=180):
+            remove_from_db(item[0], prof=True)

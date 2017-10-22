@@ -1,8 +1,8 @@
 from flask import Flask, request, render_template, Response
-from cacs_interactions import search
+from cacs_interactions import search_student, search_professor
 from functools import wraps
 from calendar_creation import create_calendar
-from database_interaction import add_student, check_existence, serve_file, list_data
+from database_interaction import add_to_db, check_existence, serve_file, list_data
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import os
@@ -36,7 +36,39 @@ def requires_auth(f):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    # Main page that provides search, selection and subscription
+    # Main page that provides search_student, selection and subscription
+
+    search_results = ''
+    file = ''
+
+    try:
+        request_search = request.form['search']
+    except KeyError:
+        request_search = ''
+
+    try:
+        request_add = request.form['add']
+    except KeyError:
+        request_add = ''
+
+    if request.method == 'POST' and request_search:
+        # If the search_student form was posted get the results and display them
+        search_term = {'VZESH': request_search.encode('windows-1251')}
+        search_results = search_student(search_term)
+
+    if request.method == 'POST' and request_add:
+        # If the name was selected, check if it exists, if not add it to the db, create the calendar and serve the link
+        selst = request_add
+        if not check_existence(selst, prof=False):
+            add_to_db(selst, create_calendar(selst, prof=False), prof=False)
+        file = '%s.ics' % selst
+
+    return render_template('main.html', search_results=search_results, file=file)
+
+
+@app.route('/prof', methods=['GET', 'POST'])
+def prof():
+    # Like main page but for professors
 
     search_results = ''
     file = ''
@@ -53,25 +85,36 @@ def index():
 
     if request.method == 'POST' and request_search:
         # If the search form was posted get the results and display them
-        search_term = {'VZESH': request_search.encode('windows-1251')}
-        search_results = search(search_term)
+        search_term = {'VZTSH': request_search.encode('windows-1251')}
+        search_results = search_professor(search_term)
 
     if request.method == 'POST' and request_add:
         # If the name was selected, check if it exists, if not add it to the db, create the calendar and serve the link
-        selst = request_add
-        if not check_existence(selst):
-            add_student(selst, create_calendar(selst))
-        file = '%s.ics' % selst
+        prr = request_add
+        if not check_existence(prr, prof=True):
+            add_to_db(prr, create_calendar(prr, prof=True), prof=True)
+        file = '/prof/%s.ics' % prr
 
-    return render_template('main.html', search_results=search_results, file=file)
+    return render_template('prof.html', search_results=search_results, file=file)
 
 
 @app.route('/<selst>.ics')
-def send_file(selst):
+def send_student_file(selst):
     # Serve the file from db
 
     if selst.isdecimal():
-        response = serve_file(selst)
+        response = serve_file(selst, prof=False)
+        if response:
+            return response, 200, {'Content-Type': 'text/calendar; charset=utf-8'}
+    return 'Error', 404
+
+
+@app.route('/prof/<prr>.ics')
+def send_prof_file(prr):
+    # Serve the file from db
+
+    if prr.isdecimal():
+        response = serve_file(prr, prof=True)
         if response:
             return response, 200, {'Content-Type': 'text/calendar; charset=utf-8'}
     return 'Error', 404
@@ -82,7 +125,14 @@ def send_file(selst):
 def show_stats():
     # Show overall stats
 
-    totals, items = list_data()
+    totals, items = list_data(prof=False)
+    return render_template('stats.html', totals=totals, items=items)
+
+
+@app.route('/prof/stats')
+def show_prof_stats():
+    # Show overall prof stats
+    totals, items = list_data(prof=True)
     return render_template('stats.html', totals=totals, items=items)
 
 

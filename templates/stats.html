@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress Annotator, SyntaxError -->
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -27,15 +28,18 @@
 
     {%- for item in items recursive %}
 
+    <!--suppress Annotator -->
     <tr>
         <td>
             <a href="webcal://{{ request.url_root.split('//')[1] }}{{ item[0][0] }}.ics">{{ item[0][0] }}</a>
         </td>
 
+        <!--suppress HtmlUnknownAttribute -->
         <td {{ 'class=bg-danger' if item[1][0] else '' }} >
             {{ item[0][1] }}
         </td>
 
+        <!--suppress HtmlUnknownAttribute -->
         <td {{ 'class=bg-danger' if item[1][1] else '' }} >
             {{ item[0][2] }}
         </td>
