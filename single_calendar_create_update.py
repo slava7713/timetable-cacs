@@ -5,9 +5,8 @@ from database_interaction import update_file, check_existence, add_to_db
 from calendar_creation import create_calendar
 import sys
 
-params = sys.argv
 
-if len(params) != 4 or not prof.isdecimal() or not selst.isdecimal or update not in ['update', 'new']:
+def terminate():
     print('''
     Usage: single_calendar_create_update.py [PROF] [SELST] [UPDATE]
     Create or update a single calendar for a given id
@@ -17,9 +16,17 @@ if len(params) != 4 or not prof.isdecimal() or not selst.isdecimal or update not
     ''')
     quit(1)
 
+params = sys.argv
+
+if len(params) != 4:
+    terminate()
+
 prof = params[1]
 selst = params[2]
 update = params[3]
+
+if not prof.isdecimal() or not selst.isdecimal or update not in ['update', 'new']:
+    terminate()
 
 # Set the new prof and update statuses to True or False
 prof = prof == 'prof'
