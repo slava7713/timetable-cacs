@@ -8,12 +8,6 @@ purge_old()
 # Then create the files for every selst
 items = get_all_db()
 
-for selst in items[0]:
-    try:
-        update_file(selst, create_calendar(selst, prof=False), prof=False)
-    except ReadTimeout:
-        logging.error('failed update for student %d' % selst)
-        pass
 
 for prr in items[1]:
     try:
