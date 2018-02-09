@@ -6,9 +6,6 @@ from calendar_creation import create_calendar
 import sys
 
 params = sys.argv
-prof = params[1]
-selst = params[2]
-update = params[3]
 
 if len(params) != 4 or not prof.isdecimal() or not selst.isdecimal or update not in ['update', 'new']:
     print('''
@@ -20,6 +17,9 @@ if len(params) != 4 or not prof.isdecimal() or not selst.isdecimal or update not
     ''')
     quit(1)
 
+prof = params[1]
+selst = params[2]
+update = params[3]
 
 # Set the new prof and update statuses to True or False
 prof = prof == 'prof'
