@@ -6,7 +6,7 @@ from calendar_creation import create_calendar
 import sys
 
 
-def terminate():
+def show_usage_message():
     print('''
     Usage: single_calendar_create_update.py [PROF] [SELST] [UPDATE]
     Create or update a single calendar for a given id
@@ -14,19 +14,23 @@ def terminate():
     SELST specifies the id of the person
     UPDATE specifies whether the person should be added as a 'new' or receive an 'update' for their calendar
     ''')
-    quit(1)
+
 
 params = sys.argv
 
 if len(params) != 4:
-    terminate()
+    show_usage_message()
+    print('Specify all arguments')
+    quit(1)
 
 prof = params[1]
 selst = params[2]
 update = params[3]
 
 if not prof.isdecimal() or not selst.isdecimal or update not in ['update', 'new']:
-    terminate()
+    show_usage_message()
+    print('Arguments are incorrect')
+    quit(1)
 
 # Set the new prof and update statuses to True or False
 prof = prof == 'prof'
