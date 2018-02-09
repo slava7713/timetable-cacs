@@ -27,7 +27,7 @@ prof = params[1]
 selst = params[2]
 update = params[3]
 
-if not prof.isdecimal() or not selst.isdecimal() or update not in ['update', 'new']:
+if prof not in ['prof', 'student'] or not selst.isdecimal() or update not in ['update', 'new']:
     show_usage_message()
     print('Arguments are incorrect')
     quit(1)
