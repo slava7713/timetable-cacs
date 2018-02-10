@@ -9,6 +9,7 @@ import os
 
 app = Flask(__name__)
 
+app.debug = False
 app.logger.name = __name__
 app.logger.setLevel('WARN')
 
