@@ -22,7 +22,6 @@ limiter = Limiter(
 )
 
 import logging
-log = logging.getLogger(__name__)
 
 logging.critical('Testing critical log for update')
 app.logger.error('does this show up?')
