@@ -6,7 +6,7 @@ from database_interaction import add_to_db, check_existence, serve_file, list_da
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import os
-
+import logging
 # TODO: add errors, logging
 
 app = Flask(__name__)
@@ -101,7 +101,9 @@ def prof():
 @app.route('/<selst>.ics')
 def send_student_file(selst):
     # Serve the file from db
-
+    logging.debug('serving debug %d' % selst)
+    logging.info('serving info %d' % selst)
+    logging.error('serving error %d' % selst)
     if selst.isdecimal():
         response = serve_file(selst, prof=False)
         if response:

@@ -1,3 +1,7 @@
+# This file is used to update all profs separately
+# Used for testing/troubleshooting only
+
+
 from database_interaction import purge_old, get_all_db, update_file
 from calendar_creation import create_calendar
 from requests.exceptions import ReadTimeout
