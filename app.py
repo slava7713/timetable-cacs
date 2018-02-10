@@ -101,9 +101,9 @@ def prof():
 @app.route('/<selst>.ics')
 def send_student_file(selst):
     # Serve the file from db
-    logging.debug('serving debug %d' % selst)
-    logging.info('serving info %d' % selst)
-    logging.error('serving error %d' % selst)
+    logging.debug('serving debug %s' % selst)
+    logging.info('serving info %s' % selst)
+    logging.error('serving error %s' % selst)
     if selst.isdecimal():
         response = serve_file(selst, prof=False)
         if response:
