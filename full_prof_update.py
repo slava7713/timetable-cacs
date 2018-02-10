@@ -5,9 +5,8 @@
 from database_interaction import purge_old, get_all_db, update_file
 from calendar_creation import create_calendar
 from requests.exceptions import ReadTimeout
-from app import app
+from app import logging
 
-logging = app.logger
 # Firstly, remove old subscriptions
 purge_old()
 

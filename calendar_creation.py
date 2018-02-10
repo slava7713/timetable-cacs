@@ -3,9 +3,7 @@ import arrow
 import bs4
 from datetime import timedelta
 from cacs_interactions import request_page
-from app import app
-
-logging = app.logger
+from app import logging
 
 def month_parse(text):
     # Parse the html to separate it into days and classes
