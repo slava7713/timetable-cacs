@@ -1,5 +1,6 @@
 from database_interaction import purge_old, get_all_db, update_file, list_data
 from calendar_creation import create_calendar
+from raygun_notifier import client
 import logging
 log = logging.getLogger(__name__)
 
@@ -30,3 +31,4 @@ for prr in items[1]:
 total_errors, data = list_data(False)
 if total_errors[1] > 5:
     log.critical('No updates for %d people!' % total_errors[1])
+    client.send_exception(userCustomData={'error_count': total_errors[1]})
