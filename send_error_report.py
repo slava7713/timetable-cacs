@@ -1,38 +1,20 @@
+import sendgrid
 import os
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-import smtplib
+from sendgrid.helpers.mail import *
 
 
 def send_email(errors):
-    # create message object instance
-    msg = MIMEMultipart()
 
-    message = 'There were %d updating errors, check them out!' % errors
-
-    # setup the parameters of the message
-    password = os.environ['MAIL_PASSWORD']
-    user = 'timetable.cacs@gmail.com'
-
-    msg['From'] = user
-    msg['To'] = user
-    msg['Subject'] = 'Timetable Error Report'
-
-    # add in the message body
-    msg.attach(MIMEText(message, 'plain'))
-
-    # create server
-    server = smtplib.SMTP('smtp.gmail.com: 587')
-
-    server.starttls()
-
-    # Login Credentials for sending the mail
-    server.login(msg['From'], password)
-
-    # send the message via the server.
-    server.sendmail(msg['From'], msg['To'], msg.as_string())
-
-    server.quit()
+    api_key = os.environ['SENDGRID_API_KEY']
+    sg = sendgrid.SendGridAPIClient(apikey=api_key)
+    from_email = Email("admin@timetable-cacs.herokuapp.com")
+    to_email = Email("timetable.cacs@gmail.com")
+    subject = "Error Report"
+    content = Content("text/plain", "%d errors occurred when updating. Check them out!" % errors)
+    message = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=message.get())
+    if response.status_code != 202:
+        raise ConnectionError('Cannot send email')
 
 
 if __name__ == '__main__':
