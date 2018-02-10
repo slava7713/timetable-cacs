@@ -6,8 +6,6 @@ from database_interaction import add_to_db, check_existence, serve_file, list_da
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import os
-import logging
-# TODO: add errors, logging
 
 app = Flask(__name__)
 
@@ -101,9 +99,6 @@ def prof():
 @app.route('/<selst>.ics')
 def send_student_file(selst):
     # Serve the file from db
-    logging.debug('serving debug %s' % selst)
-    logging.info('serving info %s' % selst)
-    logging.error('serving error %s' % selst)
     if selst.isdecimal():
         response = serve_file(selst, prof=False)
         if response:
@@ -132,8 +127,10 @@ def show_stats():
 
 
 @app.route('/prof/stats')
+@requires_auth
 def show_prof_stats():
     # Show overall prof stats
+
     totals, items = list_data(prof=True)
     return render_template('stats.html', totals=totals, items=items)
 
@@ -148,4 +145,4 @@ if __name__ == '__main__':
     if os.environ['FLASK_DEBUG']:
         app.run(host='192.168.10.101', debug=True)
     else:
-        app.run()
+        app.run(debug=False)

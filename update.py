@@ -1,4 +1,4 @@
-from database_interaction import purge_old, get_all_db, update_file
+from database_interaction import purge_old, get_all_db, update_file, list_data
 from calendar_creation import create_calendar
 import logging
 # Firstly, remove old subscriptions
@@ -22,3 +22,9 @@ for prr in items[1]:
         logging.error('failed update for prof %d' % prr)
         logging.error(exc)
         pass
+
+# End by counting total student errors and if the number is high enough trigger a warning
+
+total_errors, data = list_data(False)
+if total_errors[1] > 5:
+    logging.critical('No updates for %d people!' % total_errors[1])
