@@ -21,7 +21,7 @@ limiter = Limiter(
     default_limits=["1000 per day", "100 per hour"]
 )
 
-
+app.logger.error('TEST APP')
 def requires_auth(f):
     # To require login for stats page
 
@@ -144,7 +144,7 @@ def page_not_found(e):
 
 if __name__ == '__main__':
 
-    if os.environ['FLASK_DEBUG']:
+    if os.environ['FLASK_DEBUG'] == 'DEBUG':
         app.run(host='192.168.10.101', debug=True)
     else:
         app.run(debug=False)
