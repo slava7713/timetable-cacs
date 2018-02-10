@@ -8,14 +8,7 @@ from flask_limiter.util import get_remote_address
 import os
 
 app = Flask(__name__)
-app.debug = False
-app.logger.error('test1213')
 
-import logging
-log = logging.getLogger(__name__)
-
-logging.critical('456')
-log.error('789')
 
 username = os.environ['FLASK_LOGIN']
 password = os.environ['FLASK_PASSWORD']

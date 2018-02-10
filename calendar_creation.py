@@ -3,6 +3,8 @@ import arrow
 import bs4
 from datetime import timedelta
 from cacs_interactions import request_page
+import logging
+log = logging.getLogger(__name__)
 
 
 def month_parse(text):
