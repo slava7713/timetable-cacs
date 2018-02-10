@@ -8,7 +8,7 @@ from flask_limiter.util import get_remote_address
 import os
 
 app = Flask(__name__)
-logging = app.logger
+my_logging = app.logger
 app.logger.setLevel('WARN')
 
 username = os.environ['FLASK_LOGIN']
