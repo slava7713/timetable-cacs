@@ -21,7 +21,11 @@ limiter = Limiter(
     default_limits=["1000 per day", "100 per hour"]
 )
 
+import logging
+log = logging.getLogger(__name__)
 
+logging.critical('Testing critical log for update')
+app.logger.error('does this show up?')
 def requires_auth(f):
     # To require login for stats page
 
