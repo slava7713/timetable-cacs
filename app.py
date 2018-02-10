@@ -9,6 +9,7 @@ import os
 
 app = Flask(__name__)
 
+app.logger.name = __name__
 app.logger.setLevel('WARN')
 
 username = os.environ['FLASK_LOGIN']
@@ -147,4 +148,4 @@ if __name__ == '__main__':
     if os.environ['FLASK_DEBUG'] == 'DEBUG':
         app.run(host='192.168.10.101', debug=True)
     else:
-        app.run(debug=False)
+        print('Should not run like that')
