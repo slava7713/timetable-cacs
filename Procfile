@@ -1,1 +1,1 @@
-web: gunicorn app:app --loglevel warning
+web: gunicorn app:app --log-level warning
