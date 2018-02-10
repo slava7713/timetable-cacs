@@ -9,7 +9,13 @@ import os
 
 app = Flask(__name__)
 app.debug = False
+app.logger.error('test1213')
 
+import logging
+log = logging.getLogger(__name__)
+
+logging.critical('456')
+log.error('789')
 
 username = os.environ['FLASK_LOGIN']
 password = os.environ['FLASK_PASSWORD']
@@ -21,10 +27,7 @@ limiter = Limiter(
     default_limits=["1000 per day", "100 per hour"]
 )
 
-import logging
 
-logging.critical('Testing critical log for update')
-app.logger.error('does this show up?')
 def requires_auth(f):
     # To require login for stats page
 

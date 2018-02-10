@@ -3,10 +3,8 @@ import arrow
 import bs4
 from datetime import timedelta
 from cacs_interactions import request_page
-import logging
-log = logging.getLogger(__name__)
 
-logging.critical('Testing critical log for update')
+
 def month_parse(text):
     # Parse the html to separate it into days and classes
 

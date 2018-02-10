@@ -1,7 +1,6 @@
 from database_interaction import purge_old, get_all_db, update_file, list_data
 from calendar_creation import create_calendar
-import logging
-log = logging.getLogger(__name__)
+
 
 # Firstly, remove old subscriptions
 purge_old()
