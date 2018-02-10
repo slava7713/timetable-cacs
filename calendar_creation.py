@@ -3,7 +3,8 @@ import arrow
 import bs4
 from datetime import timedelta
 from cacs_interactions import request_page
-from app import my_logging
+import logging
+log = logging.getLogger(__name__)
 
 
 def month_parse(text):
@@ -60,7 +61,7 @@ def get_days(n, prof):
         days += month_parse(request_page(n, prof))
 
     except Exception as exc:
-        my_logging.error('Error with parsing month for %s' % str(n))
+        log.error('Error with parsing month for %s' % str(n))
         raise exc
 
     if not arrow.now().month == 6:
@@ -68,7 +69,7 @@ def get_days(n, prof):
             days += month_parse(request_page(n, prof, next_month=True))
 
         except Exception as exc:
-            my_logging.error('Error with parsing next month for %s' % str(n))
+            log.error('Error with parsing next month for %s' % str(n))
             raise exc
 
     return days
