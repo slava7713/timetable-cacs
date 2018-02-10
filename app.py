@@ -8,10 +8,8 @@ from flask_limiter.util import get_remote_address
 import os
 
 app = Flask(__name__)
-
 app.debug = False
-app.logger.name = __name__
-app.logger.setLevel('WARN')
+
 
 username = os.environ['FLASK_LOGIN']
 password = os.environ['FLASK_PASSWORD']
@@ -23,7 +21,7 @@ limiter = Limiter(
     default_limits=["1000 per day", "100 per hour"]
 )
 
-app.logger.error('TEST APP')
+
 def requires_auth(f):
     # To require login for stats page
 
