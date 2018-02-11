@@ -9,8 +9,9 @@ import os
 import logging
 
 app = Flask(__name__)
-log = logging.getLogger('gunicorn.error')
-log.setLevel('ERROR')
+app.logger.setLevel('ERROR')
+logging.getLogger('werkzeug').setLevel('ERROR')
+logging.getLogger('gunicorn.error').setLevel('ERROR')
 
 app.debug = False
 
