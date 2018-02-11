@@ -9,8 +9,9 @@ import os
 import logging
 
 app = Flask(__name__)
-app.logger.setLevel('ERROR')
-logging.getLogger('gunicorn').setLevel(logging.ERROR)
+log = logging.getLogger('gunicorn.error')
+log.setLevel('ERROR')
+
 app.debug = False
 
 username = os.environ['FLASK_LOGIN']
