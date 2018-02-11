@@ -10,7 +10,7 @@ import logging
 
 app = Flask(__name__)
 app.logger.setLevel('ERROR')
-logging.getLogger('werkzeug').setLevel(logging.ERROR)
+logging.getLogger(__name__).setLevel(logging.ERROR)
 app.debug = False
 
 username = os.environ['FLASK_LOGIN']
