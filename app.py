@@ -11,6 +11,7 @@ import logging
 app = Flask(__name__)
 app.logger.setLevel('ERROR')
 logging.getLogger('werkzeug').setLevel(logging.ERROR)
+app.debug = False
 
 username = os.environ['FLASK_LOGIN']
 password = os.environ['FLASK_PASSWORD']
@@ -141,6 +142,7 @@ def show_prof_stats():
 @app.errorhandler(404)
 def page_not_found(e):
     return e, 404
+
 
 if __name__ == '__main__':
 
