@@ -6,9 +6,11 @@ from database_interaction import add_to_db, check_existence, serve_file, list_da
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import os
+import logging
 
 app = Flask(__name__)
-
+app.logger.setLevel('ERROR')
+logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
 username = os.environ['FLASK_LOGIN']
 password = os.environ['FLASK_PASSWORD']
@@ -140,10 +142,11 @@ def show_prof_stats():
 def page_not_found(e):
     return e, 404
 
-
 if __name__ == '__main__':
 
     if os.environ['FLASK_DEBUG'] == 'DEBUG':
+        logging.getLogger('werkzeug').setLevel(logging.NOTSET)
+        app.logger.setLevel('DEBUG')
         app.run(host='192.168.10.101', debug=True)
     else:
         print('Should not run like that')
