@@ -7,6 +7,34 @@ import logging
 log = logging.getLogger(__name__)
 
 
+def get_lesson_start_time(number):
+    return [0, 100, 200, 300, 400, 500, 595, 690, 785, 880, 975][number - 1]
+
+
+class Lesson:
+
+    """
+
+    A single lesson with all the appropriate data
+        number - 1 to 8
+        date - date in DD.MM.YYYY format
+
+    """
+
+    def __init__(self, number, date, short_name, long_name, location, prof, notes=""):
+        self.datetime = arrow.get(date, 'DD.MM.YYYY').replace(hours=6, minutes=+ get_lesson_start_time(number)).datetime
+        self.short_name = short_name
+        self.long_name = long_name
+        self.location = location
+        self.prof = prof
+        self.notes = notes
+
+    def __str__(self):
+        return "%s. %s" % (str(self.datetime), self.short_name)
+
+    __iter__ = __str__
+
+
 def month_parse(text):
     # Parse the html to separate it into days and classes
 
@@ -29,26 +57,24 @@ def month_parse(text):
             for day in days[1:]:
                 items = day.table.tbody.find_all('tr', recursive=False)
                 date = items[0].text
-                temp = [''] * (day_length + 1)
-                temp[0] = date
                 if not date.strip():
                     continue
                 for index, item in enumerate(items):
                     try:
-                        data = item.find_all('div')[1]
-                        if data.text.strip() == '':
+                        all_lessons_at_that_time = item.find_all('div', {'id': 'LESS'})
+
+                        if all_lessons_at_that_time[0].text.strip() == '':
                             continue
                     except IndexError:
                         continue
-                    short_name_tag = data.b
-                    room_tag = short_name_tag.find_next().find_next()
-                    type_tag_text, prof_tag_text = data.text.split('[')[1].split(']')
-                    location = '%s[%s]' % (room_tag.text, type_tag_text)
-                    temp[index] = [short_name_tag.text, location, prof_tag_text]
-                if day_start != 0:
-                    for i in range(day_start - 1):
-                        temp.insert(1, '')
-                month_parsed.append(temp)
+                    for data in all_lessons_at_that_time:
+                        short_name_tag = data.b
+                        room_tag = short_name_tag.find_next().find_next()
+                        type_tag_text, prof_tag_text = data.text.split('[')[1].split(']')
+                        location = '%s[%s]' % (room_tag.text, type_tag_text)
+                        temp = Lesson(index + day_start - 1, date, short_name_tag.text, data['title'], location,
+                                      prof_tag_text, "")
+                        month_parsed.append(temp)
 
     return month_parsed
 
@@ -75,22 +101,20 @@ def get_days(n, prof):
     return days
 
 
-def create_file(days):
+def create_file(lessons):
     # Create the .ics file from the parsed month
 
     calendar = ics.Calendar(imports='BEGIN:VCALENDAR\nPRODID:ics.py - http://git.io/lLljaA'
                                     '\nVERSION:1\nX-WR-CALDESC:Расписание\nEND:VCALENDAR')
 
-    for day in days:
-        for index, item in enumerate(day[1:]):
-            if item != ['', ''] and item != '':
-                event = ics.Event()
-                event.begin = arrow.get(day[0], 'DD.MM.YYYY').replace(hours=6, minutes=+ (index * 100)).datetime
-                event.duration = timedelta(hours=1, minutes=30)
-                event.location = item[1]
-                event.name = item[0]
-                event.description = item[2]
-                calendar.events.append(event)
+    for lesson in lessons:
+        event = ics.Event()
+        event.begin = lesson.datetime
+        event.duration = timedelta(hours=1, minutes=30)
+        event.location = lesson.location
+        event.name = lesson.short_name
+        event.description = '%s - %s' % (lesson.prof, lesson.long_name)
+        calendar.events.append(event)
 
     return bytes(str(calendar), 'utf-8')
 
