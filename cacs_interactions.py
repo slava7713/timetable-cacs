@@ -51,7 +51,7 @@ def request_page(n, prof, next_month=False):
     if next_month:
         # Extra step since you always have to get current month first
         session.get(address, params=params, headers={"User-Agent": "hmm"})
-        date = arrow.now().replace(months=+1).format('M.YYYY')
+        date = arrow.now().shift(months=+1).format('M.YYYY')
         params.update({'pMns': date})
 
     return session.get(address, params=params, timeout=15, headers={"User-Agent": "hmm"}).text
