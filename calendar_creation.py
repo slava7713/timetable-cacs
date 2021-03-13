@@ -22,7 +22,8 @@ class Lesson:
     """
 
     def __init__(self, number, date, short_name, long_name, location, prof, notes=""):
-        self.datetime = arrow.get(date, 'DD.MM.YYYY').replace(hours=6, minutes=+ get_lesson_start_time(number)).datetime
+        self.datetime = arrow.get(date, 'DD.MM.YYYY').replace(hour=6).\
+            shift(minutes=get_lesson_start_time(number)).datetime
         self.short_name = short_name
         self.long_name = long_name
         self.location = location
@@ -114,7 +115,7 @@ def create_file(lessons):
         event.location = lesson.location
         event.name = lesson.short_name
         event.description = '%s - %s' % (lesson.prof, lesson.long_name)
-        calendar.events.append(event)
+        calendar.events.add(event)
 
     return bytes(str(calendar), 'utf-8')
 
