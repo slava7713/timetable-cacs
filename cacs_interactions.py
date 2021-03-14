@@ -6,7 +6,8 @@ import arrow
 def search_student(search_term):
     # Searches a student by name and gets a table of results
 
-    search_page_text = requests.post('http://cacs.econ.msu.ru/index.php', params={'mnu': '75'}, data=search_term).text
+    search_page_text = requests.post('https://cacs.econ.msu.ru/index.php', params={'mnu': '75'},
+                                     data=search_term, headers={"User-Agent": "hmm"}).text
     search_page_soup = bs4.BeautifulSoup(search_page_text, 'html5lib')
     table = search_page_soup.find('form', {'name': 'FrmStdSrch'}).next_sibling.next_sibling.next_sibling
 
@@ -57,7 +58,8 @@ def request_page(n, prof, next_month=False):
 
 
 def search_professor(search_term):
-    search_page_text = requests.post('http://cacs.econ.msu.ru/index.php', params={'mnu': '56'}, data=search_term).text
+    search_page_text = requests.post('https://cacs.econ.msu.ru/index.php', params={'mnu': '56'},
+                                     headers={"User-Agent": "hmm"}, data=search_term).text
     search_page_soup = bs4.BeautifulSoup(search_page_text, 'html5lib')
     table = search_page_soup.find_all('div', {'class': 'AREATXT'})[1].table
 
