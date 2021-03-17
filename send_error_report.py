@@ -6,7 +6,7 @@ from sendgrid.helpers.mail import *
 def send_email(errors):
 
     api_key = os.environ['SENDGRID_API_KEY']
-    sg = sendgrid.SendGridAPIClient(apikey=api_key)
+    sg = sendgrid.SendGridAPIClient(api_key=api_key)
     from_email = Email("admin@timetable-cacs.herokuapp.com")
     to_email = Email("timetable.cacs@gmail.com")
     subject = "Error Report"
