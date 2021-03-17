@@ -24,24 +24,22 @@ def update_individual_prof(prr):
         log.error(exc)
         pass
 
+# Firstly, remove old subscriptions
+purge_old()
 
-if __name__ == '__main__':
-    # Firstly, remove old subscriptions
-    purge_old()
+# Get all items for update
+items = get_all_db()
 
-    # Get all items for update
-    items = get_all_db()
+# Start the queue
+q = Queue(connection=conn)
+for item in items[0]:
+    q.enqueue(update_individual_student, item)
+for item in items[1]:
+    q.enqueue(update_individual_prof, item)
 
-    # Start the queue
-    q = Queue(connection=conn)
-    for item in items[0]:
-        q.enqueue(update_individual_student, item)
-    for item in items[1]:
-        q.enqueue(update_individual_prof, item)
+# End by counting total student errors and if the number is high enough trigger a warning
 
-    # End by counting total student errors and if the number is high enough trigger a warning
-
-    total_errors, data = list_data(False)
-    if total_errors[1] > 5:
-        log.critical('No updates for %d people!' % total_errors[1])
-        send_email(total_errors[1])
+total_errors, data = list_data(False)
+if total_errors[1] > 5:
+    log.critical('No updates for %d people!' % total_errors[1])
+    send_email(total_errors[1])
