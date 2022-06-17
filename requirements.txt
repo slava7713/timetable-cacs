@@ -1,4 +1,4 @@
-arrow==1.0.3
+arrow
 beautifulsoup4==4.9.3
 blinker==1.4
 certifi==2020.12.5
