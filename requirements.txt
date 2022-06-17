@@ -25,7 +25,7 @@ sendgrid==6.9.7
 six==1.16.0
 soupsieve==2.3.2.post1
 starkbank-ecdsa==2.0.3
-TatSu==5.8.0
+TatSu==5.7.0
 urllib3==1.26.9
 webencodings==0.5.1
 Werkzeug==2.1.2
