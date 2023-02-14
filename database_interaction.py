@@ -36,8 +36,8 @@ def check_existence(n, prof):
 
 def add_to_db(n, file, prof):
     # Add a new selst and file
-    import time
-    time.sleep(10)
+    # import time
+    # time.sleep(0)
     last_access = today()
     last_update = last_access
     if prof:

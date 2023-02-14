@@ -127,7 +127,7 @@
 
 <div id="timetable_button" class="container-fluid" style="display: block">
 
-    <a href="{{'webcal' if request.user_agent.platform == 'iphone' or request.user_agent.platform == 'ipad' else 'http' }}://{{ request.url_root.split('//')[1] }}{{ file }}"
+    <a href="{{'webcal'}}://{{ request.url_root.split('//')[1] }}{{ file }}"
        class="{{'btn btn-primary' if request.user_agent.platform == 'iphone' or request.user_agent.platform == 'ipad' else ''}}">Подписаться</a>
 
     {% if not request.user_agent.platform == 'iphone' or request.user_agent.platform == 'ipad' %}
