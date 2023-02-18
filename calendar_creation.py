@@ -105,7 +105,7 @@ def get_days(n, prof):
 def create_file(lessons):
     # Create the .ics file from the parsed month
 
-    calendar = ics.Calendar(imports='BEGIN:VCALENDAR\nPRODID:ics.py - http://git.io/lLljaA'
+    calendar = ics.Calendar(imports='BEGIN:VCALENDAR\nPRODID:ics.py - http://git.io/lLljaA, timetable.cacs@gmail.com'
                                     '\nVERSION:1\nX-WR-CALDESC:Расписание\nEND:VCALENDAR')
 
     for lesson in lessons:

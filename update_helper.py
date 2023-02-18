@@ -8,7 +8,7 @@ def update_individual_student(selst):
     try:
         update_file(selst, create_calendar(selst, prof=False), prof=False)
     except Exception as exc:
-        log.error('failed update for student %d' % selst)
+        log.error('failed update for student %s' % selst)
         log.error(exc)
         pass
 
@@ -17,6 +17,6 @@ def update_individual_prof(prr):
     try:
         update_file(prr, create_calendar(prr, prof=True), prof=True)
     except Exception as exc:
-        log.error('failed update for prof %d' % prr)
+        log.error('failed update for prof %s' % prr)
         log.error(exc)
         pass
