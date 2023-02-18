@@ -117,7 +117,7 @@ def create_file(lessons):
         event.description = '%s - %s' % (lesson.prof, lesson.long_name)
         calendar.events.add(event)
 
-    return bytes(str(calendar), 'utf-8')
+    return bytes(calendar.serialize(), 'utf-8')
 
 
 def create_calendar(n, prof):
