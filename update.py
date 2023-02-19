@@ -1,5 +1,4 @@
 from database_interaction import purge_old, get_all_db, list_data
-from send_error_report import send_email
 from update_helper import update_individual_prof, update_individual_student
 import logging
 
@@ -31,4 +30,3 @@ for item in items[0]:
 total_errors, data = list_data(False)
 if total_errors[1] > 5:
     log.critical('No updates for %d people!' % total_errors[1])
-    send_email(total_errors[1])

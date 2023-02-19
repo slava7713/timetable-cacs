@@ -7,9 +7,9 @@ import os
 
 parse.uses_netloc.append('postgres')
 
-url = parse.urlparse(os.environ['DATABASE_URL_ALT'])
+url = parse.urlparse(os.environ['DATABASE_URL'])
 
-# Setup the connection to the database
+# Set up the connection to the database
 conn = psycopg2.connect(
     database=url.path[1:],
     user=url.username,
@@ -57,7 +57,7 @@ def update_file(n, file, prof):
 
 
 def serve_file(n, prof):
-    # Fetch selst's file and update last_access
+    # Fetch file for selected id and update last_access
 
     if prof:
         cur.execute('SELECT file FROM econ_prof WHERE prr = %s', (n,))

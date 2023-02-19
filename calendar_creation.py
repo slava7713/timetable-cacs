@@ -41,7 +41,7 @@ def month_parse(text):
 
     html = bs4.BeautifulSoup(text, 'html5lib')
     month = html.find('table',
-                      attrs={'style': "margin-top: 4", 'class': "TEXT1", 'cellspacing': "1", 'cellpadding': "0",
+                      attrs={'style': "margin-top: 4", 'class': "TEXT1", '  cellspacing': "1", 'cellpadding': "0",
                              'bgcolor': "#8F928F", 'align': "center", 'border': "0", 'width': "100%"}).tbody
     month_parsed = []
     for days_of_the_week in month.find_all('tr', recursive=False):
@@ -53,7 +53,6 @@ def month_parse(text):
             # If month is not empty, proceed
 
             day_start = class_order[0]
-            day_length = len(class_order)
 
             for day in days[1:]:
                 items = day.table.tbody.find_all('tr', recursive=False)

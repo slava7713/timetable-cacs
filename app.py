@@ -149,6 +149,6 @@ if __name__ == '__main__':
     if os.environ['FLASK_DEBUG'] == 'DEBUG':
         logging.getLogger('werkzeug').setLevel(logging.NOTSET)
         app.logger.setLevel('DEBUG')
-        app.run(host='192.168.10.101', debug=True)
+        app.run(host='127.0.0.1', debug=True)
     else:
         print('Should not run like that')
