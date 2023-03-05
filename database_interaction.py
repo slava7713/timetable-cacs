@@ -17,6 +17,24 @@ cur = conn.cursor()
 today = datetime.now().date
 
 
+def retry(func):
+    def wrap(*args, **kwargs):
+        try:
+            result = func(*args, **kwargs)
+
+        except psycopg2.InterfaceError:
+
+            global conn
+            global cur
+            conn = psycopg2.connect(os.environ['DATABASE_URL'])
+            cur = conn.cursor()
+
+            result = func(*args, **kwargs)
+        return result
+    return wrap
+
+
+@retry
 def check_existence(n, prof):
     # Checks whether selst is in db so as not to create the file a second time
     if prof:
@@ -27,6 +45,7 @@ def check_existence(n, prof):
         return True
 
 
+@retry
 def add_to_db(n, file, prof):
     # Add a new selst and file
     import time
@@ -41,6 +60,7 @@ def add_to_db(n, file, prof):
                     (n, last_access, last_update, file))
 
 
+@retry
 def update_file(n, file, prof):
     # Update the file of specified selst
     if prof:
@@ -49,6 +69,7 @@ def update_file(n, file, prof):
         cur.execute('UPDATE econ SET last_update = %s, file = %s WHERE selst = %s', (today(), file, n))
 
 
+@retry
 def serve_file(n, prof):
     # Fetch file for selected id and update last_access
 
@@ -68,6 +89,7 @@ def serve_file(n, prof):
             return bytes(result[0])
 
 
+@retry
 def remove_from_db(n, prof):
     # Remove student
     if prof:
@@ -76,6 +98,7 @@ def remove_from_db(n, prof):
         cur.execute('DELETE FROM econ WHERE selst = %s', (n,))
 
 
+@retry
 def get_all_db():
     # Get a list of all selst
 
@@ -88,6 +111,7 @@ def get_all_db():
     return [students, profs]
 
 
+@retry
 def list_data(prof):
     # List all data for statistics page ((selst/prr, last_access, last_update), (error_no_access, error_no_update))
     # Errors = (no access for 90 days, no update for 3 days)
@@ -120,6 +144,7 @@ def list_data(prof):
     return totals, new_result
 
 
+@retry
 def purge_old():
     # Remove all items with last_access of more than 180 days ago
 
