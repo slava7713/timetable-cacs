@@ -22,7 +22,7 @@ def retry(func):
         try:
             result = func(*args, **kwargs)
 
-        except psycopg2.InterfaceError:
+        except (psycopg2.InterfaceError, psycopg2.errors.InFailedSqlTransaction):
 
             global conn
             global cur
