@@ -2,7 +2,8 @@ from urllib import parse
 import psycopg2
 from datetime import datetime, timedelta
 import os
-
+import logging
+log = logging.getLogger(__name__)
 # Database schema: (selst integer, last_access date, last_update date, file bytea)
 
 parse.uses_netloc.append('postgres')
@@ -28,6 +29,7 @@ def retry(func):
             global cur
             conn = psycopg2.connect(os.environ['DATABASE_URL'])
             cur = conn.cursor()
+            log.error("Re-connecting to database")
 
             result = func(*args, **kwargs)
         return result
