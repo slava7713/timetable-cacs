@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, Response
+from flask import Flask, request, render_template, Response, send_from_directory
 from cacs_interactions import search_student, search_professor
 from functools import wraps
 from calendar_creation import create_calendar
@@ -7,7 +7,7 @@ from flask_limiter import Limiter
 import os
 import logging
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='')
 app.logger.setLevel('ERROR')
 logging.getLogger('werkzeug').setLevel('ERROR')
 logging.getLogger('gunicorn.error').setLevel('ERROR')
@@ -139,18 +139,11 @@ def show_prof_stats():
     return render_template('stats.html', totals=totals, items=items)
 
 
-@app.route('/favicon.ico')
-def favicon():
-    # Serve favicon
-
-    return send_from_directory('favicon.ico', mimetype='image/vnd.microsoft.icon')
-
-
 @app.route('/robots.txt')
-def robots():
-    # Serve robots.txt
+@app.route('/favicon.ico')
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])
 
-    return send_from_directory('robots.txt')
 
 @app.errorhandler(404)
 def page_not_found(e):
