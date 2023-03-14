@@ -127,7 +127,7 @@ def send_prof_file(prr):
     return 'Error', 404
 
 
-@app.route('/<prof/<prr>.ics/')
+@app.route('/prof/<prr>.ics/')
 def redirect_prof(prr):
     # Redirect the link to file
     return redirect('/prof/%s.ics' % prr)
