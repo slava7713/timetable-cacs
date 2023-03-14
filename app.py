@@ -139,6 +139,19 @@ def show_prof_stats():
     return render_template('stats.html', totals=totals, items=items)
 
 
+@app.route('/favicon.ico')
+def favicon():
+    # Serve favicon
+
+    return send_from_directory('favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
+@app.route('/robots.txt')
+def robots():
+    # Serve robots.txt
+
+    return send_from_directory('robots.txt')
+
 @app.errorhandler(404)
 def page_not_found(e):
     return e, 404
