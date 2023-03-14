@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, Response, send_from_directory
+from flask import Flask, request, render_template, Response, send_from_directory, redirect
 from cacs_interactions import search_student, search_professor
 from functools import wraps
 from calendar_creation import create_calendar
@@ -110,6 +110,12 @@ def send_student_file(selst):
     return 'Error', 404
 
 
+@app.route('/<selst>.ics/')
+def redirect_student(selst):
+    # Redirect the link to file
+    return redirect('/%s.ics' % selst)
+
+
 @app.route('/prof/<prr>.ics')
 def send_prof_file(prr):
     # Serve the file from db
@@ -119,6 +125,12 @@ def send_prof_file(prr):
         if response:
             return response, 200, {'Content-Type': 'text/calendar; charset=utf-8'}
     return 'Error', 404
+
+
+@app.route('/<prof/<prr>.ics/')
+def redirect_prof(prr):
+    # Redirect the link to file
+    return redirect('/prof/%s.ics' % prr)
 
 
 @app.route('/stats')
